@@ -24,3 +24,6 @@ export const selectTaskProgressByGroup =
 
     return completedTasks / totalTasks.length;
   };
+
+export const selectTasksWithoutGroup = (state: TaskState): Task[] =>
+  state.tasks.filter((task) => task.groupId === null);
