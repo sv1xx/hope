@@ -1,5 +1,6 @@
 import type { Task } from '@/domain/task';
 import TaskItem from './taskItem';
+import { ScrollArea } from '../ui/scroll-area';
 
 type TaskListProps = {
   tasks: Task[];
@@ -11,11 +12,18 @@ const TaskList = ({ tasks, onRemove, onToggle }: TaskListProps) => {
   if (tasks.length === 0) return <span>Нет задач</span>;
 
   return (
-    <div className="flex flex-col space-y-2">
-      {tasks.map((t) => (
-        <TaskItem key={t.id} task={t} onToggle={onToggle} onRemove={onRemove} />
-      ))}
-    </div>
+    <ScrollArea className="h-195 w-full">
+      <div className="flex flex-col space-y-2">
+        {tasks.map((t) => (
+          <TaskItem
+            key={t.id}
+            task={t}
+            onToggle={onToggle}
+            onRemove={onRemove}
+          />
+        ))}
+      </div>
+    </ScrollArea>
   );
 };
 

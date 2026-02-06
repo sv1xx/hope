@@ -1,12 +1,13 @@
-import Header from './components/header';
+import SidebarLayout from './layouts/sidebarLayout';
 import TasksPage from './pages/tasksPage';
 import { ThemeProvider } from './providers/themeProvider';
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Header />
-      <TasksPage />
+      <SidebarLayout>
+        <TasksPage />
+      </SidebarLayout>
     </ThemeProvider>
   );
 }

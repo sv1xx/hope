@@ -7,6 +7,9 @@ export type TaskState = {
   groups: Group[];
   tasks: Task[];
 
+  activeGroup: ActiveGroup;
+  setActiveGroup: (group: ActiveGroup) => void;
+
   addGroup: (title: string) => void;
   removeGroup: (groupId: number) => void;
 
@@ -15,11 +18,22 @@ export type TaskState = {
   toggleTask: (taskId: number) => void;
 };
 
+export type ActiveGroup = {
+  id: number | null;
+  title: string | null;
+} | null;
+
 export const useTaskStore = create<TaskState>()(
   persist(
     (set) => ({
       tasks: [],
       groups: [],
+      activeGroup: null,
+
+      setActiveGroup: (group) =>
+        set(() => ({
+          activeGroup: group,
+        })),
 
       addGroup: (title) =>
         set((state) => ({

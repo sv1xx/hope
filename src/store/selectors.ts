@@ -1,5 +1,6 @@
 import type { Task } from '@/domain/task';
 import type { TaskState } from './useTaskStore';
+import type { Group } from '@/domain/group';
 
 export const selectTasksByGroup =
   (groupId: number | null) =>
@@ -25,5 +26,15 @@ export const selectTaskProgressByGroup =
     return completedTasks / totalTasks.length;
   };
 
+export const selectGroups = (state: TaskState): Group[] => state.groups;
+
 export const selectTasksWithoutGroup = (state: TaskState): Task[] =>
   state.tasks.filter((task) => task.groupId === null);
+
+export const selectTasksByActiveGroup = (state: TaskState): Task[] => {
+  if (state.activeGroup === null) {
+    return state.tasks;
+  }
+
+  return state.tasks.filter((task) => task.groupId === state.activeGroup?.id);
+};

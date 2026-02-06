@@ -3,11 +3,11 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
 
-type TaskFormProps = {
+type GroupFormProps = {
   onSubmit: (title: string) => void;
 };
 
-const TaskForm = ({ onSubmit }: TaskFormProps) => {
+const GroupForm = ({ onSubmit }: GroupFormProps) => {
   const [title, setTitle] = useState('');
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,10 +18,10 @@ const TaskForm = ({ onSubmit }: TaskFormProps) => {
   return (
     <form className="flex items-center gap-3" onSubmit={handleSubmit}>
       <Input
-        className="h-14"
+        className="h-10"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Новая задача"
+        placeholder="Новая группа"
       />
       <Button
         type="submit"
@@ -35,4 +35,4 @@ const TaskForm = ({ onSubmit }: TaskFormProps) => {
   );
 };
 
-export default TaskForm;
+export default GroupForm;

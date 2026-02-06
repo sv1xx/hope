@@ -17,7 +17,7 @@ type TaskItemProps = {
 
 const TaskItem = ({ task, onRemove, onToggle }: TaskItemProps) => {
   return (
-    <Item variant={'outline'} size={'sm'}>
+    <Item variant="outline" size="sm">
       <ItemContent>
         <ItemTitle
           className={task.isCompleted ? 'line-through opacity-60' : ''}
@@ -33,8 +33,8 @@ const TaskItem = ({ task, onRemove, onToggle }: TaskItemProps) => {
           onCheckedChange={() => onToggle(task.id)}
         />
         <Button
-          variant={'ghost'}
-          size={'icon'}
+          variant="ghost"
+          size="icon"
           className="flex cursor-pointer items-center justify-center"
           onClick={() => onRemove(task.id)}
         >
