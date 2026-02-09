@@ -8,6 +8,7 @@ const GroupTemplate = () => {
   const groups = useTaskStore(useShallow(selectGroups));
   const removeGroup = useTaskStore((state) => state.removeGroup);
   const addGroup = useTaskStore((state) => state.addGroup);
+  const updateGroup = useTaskStore((state) => state.updateGroup);
 
   return (
     <section>
@@ -15,7 +16,11 @@ const GroupTemplate = () => {
         <div className="flex flex-col gap-4">
           <h1>Группы</h1>
           <GroupForm onSubmit={(title) => addGroup(title)} />
-          <GroupList groups={groups} onRemove={removeGroup} />
+          <GroupList
+            groups={groups}
+            onRemove={removeGroup}
+            onUpdate={updateGroup}
+          />
         </div>
       </div>
     </section>

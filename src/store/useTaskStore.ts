@@ -13,6 +13,7 @@ export type TaskState = {
 
   addGroup: (title: string) => void;
   removeGroup: (groupId: number) => void;
+  updateGroup: (groudId: number, title: string) => void;
 
   addTask: (title: string, groupId: number | null) => void;
   removeTask: (taskId: number) => void;
@@ -45,6 +46,12 @@ export const useTaskStore = create<TaskState>()(
           tasks: state.tasks.filter((task) => task.groupId !== groupId),
           activeGroupId:
             state.activeGroupId === groupId ? null : state.activeGroupId,
+        })),
+      updateGroup: (groupId, title) =>
+        set((state) => ({
+          groups: state.groups.map((group) =>
+            group.id === groupId ? { ...group, title } : group,
+          ),
         })),
 
       addTask: (title, groupId) =>
