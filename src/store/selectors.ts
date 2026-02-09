@@ -32,9 +32,12 @@ export const selectTasksWithoutGroup = (state: TaskState): Task[] =>
   state.tasks.filter((task) => task.groupId === null);
 
 export const selectTasksByActiveGroup = (state: TaskState): Task[] => {
-  if (state.activeGroup === null) {
+  if (state.activeGroupId === null) {
     return state.tasks;
   }
 
-  return state.tasks.filter((task) => task.groupId === state.activeGroup?.id);
+  return state.tasks.filter((task) => task.groupId === state.activeGroupId);
 };
+
+export const selectActiveGroup = (state: TaskState) =>
+  state.groups.find((g) => g.id === state.activeGroupId) ?? null;

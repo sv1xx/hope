@@ -7,8 +7,9 @@ export type TaskState = {
   groups: Group[];
   tasks: Task[];
 
-  activeGroup: ActiveGroup;
-  setActiveGroup: (group: ActiveGroup) => void;
+  activeGroupId: number | null;
+  setActiveGroup: (groupId: number | null) => void;
+  clearAll: () => void;
 
   addGroup: (title: string) => void;
   removeGroup: (groupId: number) => void;
@@ -18,21 +19,16 @@ export type TaskState = {
   toggleTask: (taskId: number) => void;
 };
 
-export type ActiveGroup = {
-  id: number | null;
-  title: string | null;
-} | null;
-
 export const useTaskStore = create<TaskState>()(
   persist(
     (set) => ({
       tasks: [],
       groups: [],
-      activeGroup: null,
+      activeGroupId: null,
 
-      setActiveGroup: (group) =>
+      setActiveGroup: (groupId) =>
         set(() => ({
-          activeGroup: group,
+          activeGroupId: groupId,
         })),
 
       addGroup: (title) =>
@@ -46,6 +42,8 @@ export const useTaskStore = create<TaskState>()(
         set((state) => ({
           groups: state.groups.filter((group) => group.id !== groupId),
           tasks: state.tasks.filter((task) => task.groupId !== groupId),
+          activeGroupId:
+            state.activeGroupId === groupId ? null : state.activeGroupId,
         })),
 
       addTask: (title, groupId) =>
@@ -74,6 +72,13 @@ export const useTaskStore = create<TaskState>()(
               ? { ...task, isCompleted: !task.isCompleted }
               : task,
           ),
+        })),
+
+      clearAll: () =>
+        set(() => ({
+          tasks: [],
+          groups: [],
+          activeGroupId: null,
         })),
     }),
     { name: 'tasks-storage' },
