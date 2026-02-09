@@ -8,22 +8,51 @@ import {
 } from '@/components/ui/item';
 import { Checkbox } from '../ui/checkbox';
 import { Button } from '../ui/button';
+import { useState } from 'react';
+import { Input } from '../ui/input';
 
 type TaskItemProps = {
   task: Task;
   onToggle: (taskId: number) => void;
   onRemove: (taskId: number) => void;
+  onUpdate: (taskId: number, title: string) => void;
 };
 
-const TaskItem = ({ task, onRemove, onToggle }: TaskItemProps) => {
+const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [draftTitle, setDraftTitle] = useState(task.title);
+
+  const handleSave = () => {
+    if (!draftTitle.trim()) return;
+    onUpdate(task.id, draftTitle);
+    setIsEditing(false);
+  };
   return (
     <Item variant="outline" size="sm">
       <ItemContent>
-        <ItemTitle
-          className={task.isCompleted ? 'line-through opacity-60' : ''}
-        >
-          {task.title}
-        </ItemTitle>
+        {isEditing ? (
+          <ItemTitle>
+            <Input
+              autoFocus
+              value={draftTitle}
+              onChange={(e) => setDraftTitle(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSave();
+                if (e.key === 'Escape') {
+                  setDraftTitle(task.title);
+                  setIsEditing(false);
+                }
+              }}
+            />
+          </ItemTitle>
+        ) : (
+          <ItemTitle
+            onDoubleClick={() => setIsEditing(true)}
+            className={task.isCompleted ? 'line-through opacity-60' : ''}
+          >
+            {task.title}
+          </ItemTitle>
+        )}
       </ItemContent>
       <ItemActions className="flex items-center gap-2">
         <Checkbox

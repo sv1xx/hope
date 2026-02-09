@@ -17,6 +17,7 @@ export type TaskState = {
   addTask: (title: string, groupId: number | null) => void;
   removeTask: (taskId: number) => void;
   toggleTask: (taskId: number) => void;
+  updateTask: (taskId: number, title: string) => void;
 };
 
 export const useTaskStore = create<TaskState>()(
@@ -71,6 +72,13 @@ export const useTaskStore = create<TaskState>()(
             task.id === taskId
               ? { ...task, isCompleted: !task.isCompleted }
               : task,
+          ),
+        })),
+
+      updateTask: (taskId, title) =>
+        set((state) => ({
+          tasks: state.tasks.map((task) =>
+            task.id === taskId ? { ...task, title } : task,
           ),
         })),
 
