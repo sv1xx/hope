@@ -8,8 +8,9 @@ import {
 } from '@/components/ui/item';
 import { Checkbox } from '../ui/checkbox';
 import { Button } from '../ui/button';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Input } from '../ui/input';
+import useClickOutside from '@/hooks/useClickOutside';
 
 type TaskItemProps = {
   task: Task;
@@ -22,6 +23,18 @@ const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [draftTitle, setDraftTitle] = useState(task.title);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(
+    containerRef,
+    () => {
+      (handleSave(), setIsEditing(false));
+    },
+    {
+      enabled: isEditing,
+    },
+  );
+
   const handleSave = () => {
     if (!draftTitle.trim()) return;
     onUpdate(task.id, draftTitle);
@@ -29,7 +42,7 @@ const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
   };
   return (
     <Item variant="outline" size="sm">
-      <ItemContent>
+      <ItemContent ref={containerRef}>
         {isEditing ? (
           <ItemTitle>
             <Input

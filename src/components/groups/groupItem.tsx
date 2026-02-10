@@ -7,8 +7,9 @@ import {
 } from '@/components/ui/item';
 import { Button } from '../ui/button';
 import type { Group } from '@/domain/group';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Input } from '../ui/input';
+import useClickOutside from '@/hooks/useClickOutside';
 
 type GroupItemProps = {
   group: Group;
@@ -21,6 +22,16 @@ const GroupItem = ({ group, onRemove, onSelect, onUpdate }: GroupItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [draftTitle, setDraftTitle] = useState(group.title);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(
+    containerRef,
+    () => {
+      (handleSave(), setIsEditing(false));
+    },
+    { enabled: isEditing },
+  );
+
   const handleSave = () => {
     if (!draftTitle.trim()) return;
     onUpdate(group.id, draftTitle);
@@ -32,7 +43,7 @@ const GroupItem = ({ group, onRemove, onSelect, onUpdate }: GroupItemProps) => {
       variant="outline"
       className="cursor-pointer py-1 pr-2 pl-4 hover:bg-neutral-800"
     >
-      <ItemContent>
+      <ItemContent ref={containerRef}>
         {isEditing ? (
           <ItemTitle>
             <Input
