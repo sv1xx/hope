@@ -12,19 +12,19 @@ export const selectTaskCountByGroup =
   (state: TaskState): number =>
     state.tasks.filter((task) => task.groupId === groupId).length;
 
-export const selectTaskProgressByGroup =
-  (groupId: number | null) =>
-  (state: TaskState): number => {
-    const totalTasks = state.tasks.filter((task) => task.groupId === groupId);
+export const selectTasksProgressByActiveGroup = (state: TaskState): number => {
+  const tasks =
+    state.activeGroupId === null
+      ? state.tasks
+      : state.tasks.filter((task) => task.groupId === state.activeGroupId);
 
-    if (totalTasks.length === 0) return 0;
+  const total = tasks.length;
+  if (total === 0) return 0;
 
-    const completedTasks = state.tasks.filter(
-      (task) => task.isCompleted === true,
-    ).length;
+  const completed = tasks.filter((task) => task.isCompleted).length;
 
-    return completedTasks / totalTasks.length;
-  };
+  return Math.round((completed / total) * 100);
+};
 
 export const selectGroups = (state: TaskState): Group[] => state.groups;
 
