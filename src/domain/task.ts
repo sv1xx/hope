@@ -4,4 +4,5 @@ export type Task = {
   title: string;
   isCompleted: boolean;
   createdAt: number;
+  order: number;
 };

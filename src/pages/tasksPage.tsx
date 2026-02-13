@@ -20,8 +20,6 @@ const TasksPage = () => {
   const updateTask = useTaskStore((state) => state.updateTask);
   const progressValue = useTaskStore(selectTasksProgressByActiveGroup);
 
-  console.log(progressValue);
-
   return (
     <div className="mx-auto h-full w-full max-w-7xl px-2.5">
       <div className="flex h-full flex-col justify-between">

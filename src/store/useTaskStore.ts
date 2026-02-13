@@ -64,6 +64,7 @@ export const useTaskStore = create<TaskState>()(
               groupId,
               isCompleted: false,
               createdAt: Date.now(),
+              order: 0,
             },
           ],
         })),

@@ -11,6 +11,8 @@ import { Button } from '../ui/button';
 import { useRef, useState } from 'react';
 import { Input } from '../ui/input';
 import useClickOutside from '@/hooks/useClickOutside';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 type TaskItemProps = {
   task: Task;
@@ -24,6 +26,14 @@ const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
   const [draftTitle, setDraftTitle] = useState(task.title);
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: task.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   useClickOutside(
     containerRef,
@@ -41,7 +51,14 @@ const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
     setIsEditing(false);
   };
   return (
-    <Item variant="outline" size="sm">
+    <Item
+      variant="outline"
+      size="sm"
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       <ItemContent ref={containerRef}>
         {isEditing ? (
           <ItemTitle>
