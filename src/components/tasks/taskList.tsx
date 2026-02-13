@@ -22,8 +22,8 @@ const TaskList = ({ tasks, onRemove, onToggle, onUpdate }: TaskListProps) => {
 
     if (over && active.id !== over.id) {
       setData((task) => {
-        const oldIndex = task.findIndex((item) => item.order === active.id);
-        const newIndex = task.findIndex((item) => item.order === over.id);
+        const oldIndex = task.findIndex((item) => item.id === active.id);
+        const newIndex = task.findIndex((item) => item.id === over.id);
         return arrayMove(tasks, oldIndex, newIndex);
       });
     }
@@ -31,7 +31,7 @@ const TaskList = ({ tasks, onRemove, onToggle, onUpdate }: TaskListProps) => {
 
   return (
     <ScrollArea className="h-195 w-full">
-      <div className="flex flex-col space-y-2">
+      <div className="relative z-0 flex flex-col space-y-2">
         <DndContext
           modifiers={[restrictToVerticalAxis]}
           onDragEnd={handleDragEnd}

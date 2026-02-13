@@ -58,6 +58,7 @@ const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
       style={style}
       {...attributes}
       {...listeners}
+      className="relative z-0"
     >
       <ItemContent ref={containerRef}>
         {isEditing ? (
@@ -90,11 +91,12 @@ const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
           name="terms-checkbox-basic"
           checked={task.isCompleted}
           onCheckedChange={() => onToggle(task.id)}
+          className="relative z-50"
         />
         <Button
           variant="ghost"
           size="icon"
-          className="flex cursor-pointer items-center justify-center"
+          className="z-10 flex cursor-pointer items-center justify-center"
           onClick={() => onRemove(task.id)}
         >
           <Trash2 className="text-red-700" size={50} />
