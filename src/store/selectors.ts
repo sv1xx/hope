@@ -31,12 +31,22 @@ export const selectGroups = (state: TaskState): Group[] => state.groups;
 export const selectTasksWithoutGroup = (state: TaskState): Task[] =>
   state.tasks.filter((task) => task.groupId === null);
 
-export const selectTasksByActiveGroup = (state: TaskState): Task[] => {
+// export const selectTasksByActiveGroup = (state: TaskState): Task[] => {
+//   if (state.activeGroupId === null) {
+//     return state.tasks;
+//   }
+
+//   return state.tasks.filter((task) => task.groupId === state.activeGroupId);
+// };
+
+export const selectTasksByActiveGroup = (state: TaskState) => {
   if (state.activeGroupId === null) {
-    return state.tasks;
+    return [...state.tasks].sort((a, b) => a.globalOrder - b.globalOrder);
   }
 
-  return state.tasks.filter((task) => task.groupId === state.activeGroupId);
+  return state.tasks
+    .filter((t) => t.groupId === state.activeGroupId)
+    .sort((a, b) => a.groupOrder - b.groupOrder);
 };
 
 export const selectActiveGroup = (state: TaskState) =>

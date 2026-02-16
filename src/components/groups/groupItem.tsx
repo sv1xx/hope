@@ -9,7 +9,6 @@ import { Button } from '../ui/button';
 import type { Group } from '@/domain/group';
 import { useRef, useState } from 'react';
 import { Input } from '../ui/input';
-import useClickOutside from '@/hooks/useClickOutside';
 
 type GroupItemProps = {
   group: Group;
@@ -23,14 +22,6 @@ const GroupItem = ({ group, onRemove, onSelect, onUpdate }: GroupItemProps) => {
   const [draftTitle, setDraftTitle] = useState(group.title);
 
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useClickOutside(
-    containerRef,
-    () => {
-      (handleSave(), setIsEditing(false));
-    },
-    { enabled: isEditing },
-  );
 
   const handleSave = () => {
     if (!draftTitle.trim()) return;
@@ -50,6 +41,7 @@ const GroupItem = ({ group, onRemove, onSelect, onUpdate }: GroupItemProps) => {
               autoFocus
               value={draftTitle}
               onChange={(e) => setDraftTitle(e.target.value)}
+              onBlur={handleSave}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleSave();
                 if (e.key === 'Escape') {
@@ -60,7 +52,7 @@ const GroupItem = ({ group, onRemove, onSelect, onUpdate }: GroupItemProps) => {
             />
           </ItemTitle>
         ) : (
-          <ItemTitle onDoubleClick={() => setIsEditing(true)}>
+          <ItemTitle onClick={() => setIsEditing(true)}>
             {group.title}
           </ItemTitle>
         )}
@@ -74,7 +66,7 @@ const GroupItem = ({ group, onRemove, onSelect, onUpdate }: GroupItemProps) => {
             (e.stopPropagation(), onRemove(group.id));
           }}
         >
-          <Trash2 className="text-red-700" size={50} />
+          <Trash2 className="text-red-700" />
         </Button>
       </ItemActions>
     </Item>

@@ -19,6 +19,7 @@ export type TaskState = {
   removeTask: (taskId: number) => void;
   toggleTask: (taskId: number) => void;
   updateTask: (taskId: number, title: string) => void;
+  reorderTasks: (sourceIndex: number, destinationIndex: number) => void;
 };
 
 export const useTaskStore = create<TaskState>()(
@@ -55,19 +56,64 @@ export const useTaskStore = create<TaskState>()(
         })),
 
       addTask: (title, groupId) =>
-        set((state) => ({
-          tasks: [
-            ...state.tasks,
-            {
-              id: Date.now(),
-              title,
-              groupId,
-              isCompleted: false,
-              createdAt: Date.now(),
-              order: 0,
-            },
-          ],
-        })),
+        set((state) => {
+          const maxGlobalOrder =
+            state.tasks.length > 0
+              ? Math.max(...state.tasks.map((t) => t.globalOrder))
+              : -1;
+
+          const groupTasks = state.tasks.filter(
+            (task) => task.groupId === groupId,
+          );
+
+          const maxGroupOrder =
+            groupTasks.length > 0
+              ? Math.max(...groupTasks.map((t) => t.groupOrder))
+              : -1;
+
+          return {
+            tasks: [
+              ...state.tasks,
+              {
+                id: Date.now(),
+                title,
+                groupId,
+                isCompleted: false,
+                createdAt: Date.now(),
+                globalOrder: maxGlobalOrder + 1,
+                groupOrder: maxGroupOrder + 1,
+              },
+            ],
+          };
+        }),
+
+      reorderTasks: (sourceIndex: number, destinationIndex: number) =>
+        set((state) => {
+          const activeGroupId = state.activeGroupId;
+
+          const sortedTasks =
+            activeGroupId === null
+              ? [...state.tasks].sort((a, b) => a.globalOrder - b.globalOrder)
+              : state.tasks
+                  .filter((t) => t.groupId === activeGroupId)
+                  .sort((a, b) => a.groupOrder - b.groupOrder);
+
+          const [moved] = sortedTasks.splice(sourceIndex, 1);
+          sortedTasks.splice(destinationIndex, 0, moved);
+
+          const updatedTasks = state.tasks.map((task) => {
+            const index = sortedTasks.findIndex((t) => t.id === task.id);
+            if (index === -1) return task;
+
+            if (activeGroupId === null) {
+              return { ...task, globalOrder: index };
+            }
+
+            return { ...task, groupOrder: index };
+          });
+
+          return { tasks: updatedTasks };
+        }),
 
       removeTask: (taskId) =>
         set((state) => ({

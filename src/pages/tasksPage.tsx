@@ -19,6 +19,11 @@ const TasksPage = () => {
   const activeGroup = useTaskStore(selectActiveGroup);
   const updateTask = useTaskStore((state) => state.updateTask);
   const progressValue = useTaskStore(selectTasksProgressByActiveGroup);
+  const reorderTasks = useTaskStore((state) => state.reorderTasks);
+
+  const dragEnd = (sourceIndex: number, destinationIndex: number) => {
+    reorderTasks(sourceIndex, destinationIndex);
+  };
 
   return (
     <div className="mx-auto h-full w-full max-w-7xl px-2.5">
@@ -39,6 +44,7 @@ const TasksPage = () => {
             onToggle={toggleTask}
             onRemove={removeTask}
             onUpdate={updateTask}
+            onDragEnd={dragEnd}
           />
         </div>
         <TaskForm onSubmit={(title) => addTask(title, activeGroupId)} />

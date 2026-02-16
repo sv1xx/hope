@@ -1,5 +1,5 @@
 import type { Task } from '@/domain/task';
-import { Trash2 } from 'lucide-react';
+import { GripVertical, X } from 'lucide-react';
 import {
   Item,
   ItemActions,
@@ -7,10 +7,8 @@ import {
   ItemTitle,
 } from '@/components/ui/item';
 import { Checkbox } from '../ui/checkbox';
-import { Button } from '../ui/button';
 import { useRef, useState } from 'react';
 import { Input } from '../ui/input';
-import useClickOutside from '@/hooks/useClickOutside';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -27,23 +25,21 @@ const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: task.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    boxShadow: isDragging ? '0 8px 24px rgba(0,0,0,0.1)' : undefined,
+    opacity: isDragging ? 0.8 : 1,
   };
-
-  useClickOutside(
-    containerRef,
-    () => {
-      (handleSave(), setIsEditing(false));
-    },
-    {
-      enabled: isEditing,
-    },
-  );
 
   const handleSave = () => {
     if (!draftTitle.trim()) return;
@@ -57,9 +53,18 @@ const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
       ref={setNodeRef}
       style={style}
       {...attributes}
-      {...listeners}
-      className="relative z-0"
+      className="group hover:bg-muted/40 transition-colors"
     >
+      <ItemActions className="flex items-center gap-4">
+        <GripVertical {...listeners} className="cursor-grab" />
+        <Checkbox
+          id="terms-checkbox-basic"
+          className="h-5 w-5"
+          name="terms-checkbox-basic"
+          checked={task.isCompleted}
+          onCheckedChange={() => onToggle(task.id)}
+        />
+      </ItemActions>
       <ItemContent ref={containerRef}>
         {isEditing ? (
           <ItemTitle>
@@ -67,6 +72,7 @@ const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
               autoFocus
               value={draftTitle}
               onChange={(e) => setDraftTitle(e.target.value)}
+              onBlur={handleSave}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleSave();
                 if (e.key === 'Escape') {
@@ -78,29 +84,20 @@ const TaskItem = ({ task, onRemove, onToggle, onUpdate }: TaskItemProps) => {
           </ItemTitle>
         ) : (
           <ItemTitle
-            onDoubleClick={() => setIsEditing(true)}
+            onClick={() => setIsEditing(true)}
             className={task.isCompleted ? 'line-through opacity-60' : ''}
           >
             {task.title}
           </ItemTitle>
         )}
       </ItemContent>
-      <ItemActions className="flex items-center gap-2">
-        <Checkbox
-          id="terms-checkbox-basic"
-          name="terms-checkbox-basic"
-          checked={task.isCompleted}
-          onCheckedChange={() => onToggle(task.id)}
-          className="relative z-50"
-        />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="z-10 flex cursor-pointer items-center justify-center"
+      <ItemActions>
+        <button
+          className="cursor-pointer opacity-0 transition-opacity group-hover:opacity-100"
           onClick={() => onRemove(task.id)}
         >
-          <Trash2 className="text-red-700" size={50} />
-        </Button>
+          <X className="" size={24} strokeWidth={1.5} />
+        </button>
       </ItemActions>
     </Item>
   );
